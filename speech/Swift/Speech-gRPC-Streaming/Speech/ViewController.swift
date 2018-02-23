@@ -64,6 +64,7 @@ class ViewController : UIViewController, AudioControllerDelegate {
             
             if let error = error {
                 strongSelf.textView.text = error.localizedDescription
+                print("error sucsess")
             } else if let response = response {
                 var finished = false
                 print(response)
@@ -75,6 +76,7 @@ class ViewController : UIViewController, AudioControllerDelegate {
                     }
                 }
                 strongSelf.textView.text = response.description
+                print("response success")
                 if finished {
                     strongSelf.stopAudio(strongSelf)
                 }
