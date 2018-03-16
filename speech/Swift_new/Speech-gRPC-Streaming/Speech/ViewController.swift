@@ -224,17 +224,23 @@ extension ViewController: AudioControllerDelegate {
                 } else if let response = response {
                     var finished = false
                     print(response)
+                    var i:Int=0
                     for result in response.resultsArray! {
                         if let result = result as? StreamingRecognitionResult {
                             if result.isFinal {
                                 finished = true
                             }
+                            if i==0{
+                                print((result.alternativesArray[0] as AnyObject).transcript)
+                                i=1
+                            }
                         }
                     }
-                    strongSelf.contentsArray[(self?.dataNum)!] = response.description
-                    
+                    strongSelf.contentsArray[(self?.dataNum)!] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+                    print(((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
                     print(String(describing:type (of:response)))
                     print(String(describing:type (of:response.description)))
+                    
                     //時刻取得
                     let now = NSDate()
                     
