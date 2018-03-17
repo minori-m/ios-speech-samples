@@ -20,14 +20,11 @@ UITableViewDataSource,UITableViewDelegate{
     var dataNum : Int = 0
     var audioData: NSMutableData!
     let SAMPLE_RATE = 16000
+    let userDefaults = UserDefaults.standard
     
-    var dateArray:NSMutableArray = [
-        "2018/2/27","2018/2/28 13:33:33","","",""
-    ]
+    var dateArray:NSMutableArray = []
     
-    var contentsArray:NSMutableArray = [
-        "test","","","",""
-    ]
+    var contentsArray:NSMutableArray = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -41,11 +38,11 @@ UITableViewDataSource,UITableViewDelegate{
 //        let commandCenter = MPRemoteCommandCenter.shared();
 //        commandCenter.togglePlayPauseCommand.addTarget (self,action : Selector(("remoteToggledPlayPause:")))
         
-        //初期時点ではマイクはオフ
-        micStatus = 0
-        //初期時点ではメモデータ数は0
-        dataNum = -1
-        print("ViewController")
+//        //初期時点ではマイクはオフ
+//        micStatus = 0
+//        //初期時点ではメモデータ数は0
+//        dataNum = -1
+//        print("ViewController")
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -93,18 +90,19 @@ UITableViewDataSource,UITableViewDelegate{
         _ = AudioController.sharedInstance.prepare(specifiedSampleRate: SAMPLE_RATE)
         SpeechRecognitionService.sharedInstance.sampleRate = SAMPLE_RATE
         _ = AudioController.sharedInstance.start()
-        if(dataNum<5){
-            dataNum+=1
-        }else{
-            dataNum=0
-        }
+        dataNum = 0
+//        if(dataNum<5){
+//            dataNum+=1
+//        }else{
+//            dataNum=0
+//        }
     }
     
     @IBAction func stopAudio(_ sender: NSObject) {
         _ = AudioController.sharedInstance.stop()
         SpeechRecognitionService.sharedInstance.stopStreaming()
         
-        print(dataNum)
+        //print(dataNum)
     }
     
 //    override func remoteControlReceived(with event: UIEvent?) {
@@ -218,7 +216,7 @@ extension ViewController: AudioControllerDelegate {
                 }
                 
                 if let error = error {
-                    strongSelf.contentsArray[(self?.dataNum)!] = error.localizedDescription
+                    strongSelf.contentsArray.add(error.localizedDescription)
                     
                     print(strongSelf.contentsArray)
                 } else if let response = response {
@@ -236,8 +234,8 @@ extension ViewController: AudioControllerDelegate {
                             }
                         }
                     }
-                    strongSelf.contentsArray[(self?.dataNum)!] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
-                    print(((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
+                    
+                    //print(((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
                     print(String(describing:type (of:response)))
                     print(String(describing:type (of:response.description)))
                     
@@ -248,8 +246,16 @@ extension ViewController: AudioControllerDelegate {
                     formatter.dateFormat = "yyyy/MM/dd \n HH:mm:ss"
                     
                     let dateString = formatter.string(from: now as Date)
-                    strongSelf.dateArray[(self?.dataNum)!] = dateString
                     
+                    if(self?.dataNum == 0){
+                        
+                        strongSelf.contentsArray.add (((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
+                    strongSelf.dateArray.add(dateString)
+                    self?.dataNum = 1
+                    }else{
+                        strongSelf.contentsArray[strongSelf.contentsArray.count-1] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+                        strongSelf.dateArray[strongSelf.dateArray.count-1] = dateString
+                    }
                     print(strongSelf.contentsArray)
                     //NSLog(String(describing: strongSelf.contentsArray[(self?.dataNum)!]))
                     if finished {
@@ -259,9 +265,13 @@ extension ViewController: AudioControllerDelegate {
             })
             self.audioData = NSMutableData()
         }
-        table.reloadData()
+        print(StreamingRecognizeResponse_SpeechEventType.endOfSingleUtterance)
+        self.userDefaults.set(contentsArray, forKey: "contents")
+        self.userDefaults.synchronize()
         
+        table.reloadData()
     }
-    
 }
+    
+
 
