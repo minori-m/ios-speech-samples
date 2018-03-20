@@ -4,3 +4,4 @@
 
 #import <googleapis/CloudSpeech.pbobjc.h>
 #import <googleapis/CloudSpeech.pbrpc.h>
+#import "Konashi/Konashi.h"

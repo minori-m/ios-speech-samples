@@ -11,72 +11,86 @@ import AVFoundation
 import googleapis
 import MediaPlayer
 
+
 class ViewController: UIViewController ,
-UITableViewDataSource,UITableViewDelegate{
+UITextViewDelegate{
+//    class ViewController: UIViewController ,
+//    UITableViewDataSource,UITableViewDelegate,UITableViewDelegate{
     
     @IBOutlet weak var debug: UILabel!
-    @IBOutlet var table: UITableView!
+    //@IBOutlet var table: UITableView!
+    @IBOutlet weak var recordingView: UITextView!
+    
+    
+    
+    var userDefaults = UserDefaults.standard
+    
+    @IBAction func resetButton(_ sender: Any) {
+        userDefaults.removeObject(forKey: "contents")
+        userDefaults.removeObject(forKey: "date")
+    }
+    
     var micStatus:Int = 0
     var dataNum : Int = 0
     var audioData: NSMutableData!
     let SAMPLE_RATE = 16000
-    let userDefaults = UserDefaults.standard
     
-    var dateArray:NSMutableArray = []
+    var dateArray:Array<String> = []
     
-    var contentsArray:NSMutableArray = []
+    var contentsArray:Array<String> = []
+    
+    var dateString:String = ""
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        table.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
-        table.estimatedRowHeight = 66
-        table.rowHeight = UITableViewAutomaticDimension
+//        table.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
+//        table.estimatedRowHeight = 66
+//        table.rowHeight = UITableViewAutomaticDimension
         
         AudioController.sharedInstance.delegate = self
-        //UIApplication.shared.beginReceivingRemoteControlEvents()
-        //base.ViewDidLoad ();
-//        let commandCenter = MPRemoteCommandCenter.shared();
-//        commandCenter.togglePlayPauseCommand.addTarget (self,action : Selector(("remoteToggledPlayPause:")))
         
-//        //初期時点ではマイクはオフ
-//        micStatus = 0
-//        //初期時点ではメモデータ数は0
-//        dataNum = -1
-//        print("ViewController")
-        // Do any additional setup after loading the view, typically from a nib.
+        Konashi.shared().readyHandler = {() -> Void in
+            Konashi.pinMode(KonashiDigitalIOPin.LED2, mode: KonashiPinMode.output)
+            Konashi.digitalWrite(KonashiDigitalIOPin.LED2, value: KonashiLevel.high)
+            Konashi.pinMode(KonashiDigitalIOPin.S1,mode:KonashiPinMode.input)
+            Konashi.shared().digitalInputDidChangeValueHandler = {_,_  in
+                print("sw=",  Konashi.digitalRead(KonashiDigitalIOPin.S1))
+            }
+        }
     }
     
-    //Table Viewのセルの数を指定
-    func tableView(_ table: UITableView,
-                   numberOfRowsInSection section: Int) -> Int {
-        print("count")
-        return dateArray.count
-        
-    }
-    
-    //各セルの要素を設定する
-    func tableView(_ table: UITableView,
-                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        // tableCell の ID で UITableViewCell のインスタンスを生成
-        let cell = table.dequeueReusableCell(withIdentifier: "tableCell",
-                                             for: indexPath)
-        
-        
-        // Tag番号 1 で UILabel for dateインスタンスの生成
-        let dateLabel = cell.viewWithTag(1) as! UILabel
-        dateLabel.text = String(describing: dateArray[indexPath.row])
-        print(indexPath.row)
-        
-        // Tag番号 ２ で UILabel for contentsインスタンスの生成
-        let contentsLabel = cell.viewWithTag(2) as! UILabel
-        contentsLabel.text = String(describing: contentsArray[indexPath.row])
-        contentsLabel.sizeToFit()
-        print(indexPath.row)
-        
-        debug.text = "tableView"
-        return cell
-    }
+//    //Table Viewのセルの数を指定
+//    func tableView(_ table: UITableView,
+//                   numberOfRowsInSection section: Int) -> Int {
+//        print("count")
+//        return dateArray.count
+//
+//    }
+//
+//    //各セルの要素を設定する
+//    func tableView(_ table: UITableView,
+//                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//
+//        // tableCell の ID で UITableViewCell のインスタンスを生成
+//        let cell = table.dequeueReusableCell(withIdentifier: "tableCell",
+//                                             for: indexPath)
+//
+//
+//        // Tag番号 1 で UILabel for dateインスタンスの生成
+//        let dateLabel = cell.viewWithTag(1) as! UILabel
+//        dateLabel.text = String(describing: dateArray[indexPath.row])
+//        print(indexPath.row)
+//
+//        // Tag番号 ２ で UILabel for contentsインスタンスの生成
+//        let contentsLabel = cell.viewWithTag(2) as! UILabel
+//        contentsLabel.text = String(describing: contentsArray[indexPath.row])
+//        contentsLabel.sizeToFit()
+//        print(indexPath.row)
+//
+//        debug.text = "tableView"
+//        return cell
+//    }
     
     
     @IBAction func recordAudio(_ sender: NSObject) {
@@ -105,97 +119,12 @@ UITableViewDataSource,UITableViewDelegate{
         //print(dataNum)
     }
     
-//    override func remoteControlReceived(with event: UIEvent?) {
-//        let rc = event!.subtype
-//        let p =  self.becomeFirstResponder()
-//        print("received remote control \(rc.rawValue)")
-//        switch rc{
-//        case .remoteControlTogglePlayPause:
-//            print("toggle")
-//            default:break
-//        }
-//    }
-  
-//    override func ViewDidLoad(){
-//    base.ViewDidLoad ();
-//    var commandCenter = MPRemoteCommandCenter.Shared;
-//    commandCenter.TogglePlayPauseCommand.AddTarget (ToggledPlayPauseButton);
-//    }
-    
-//    func remoteToggledPlayPause(event:MPRemoteCommandEvent)
-//{
-//    print("Toggled")
-//    //return MPRemoteCommandHandlerStatus.success
-//    }
-    
-    
-//    func addRemoteControlEvent() {
-//        let commandCenter = MPRemoteCommandCenter.shared()
-//
-//        commandCenter.togglePlayPauseCommand.addTarget(self, action: Selector(("remoteTogglePlayPause:")))
-//        //commandCenter.playCommand.addTarget(self, action: "remotePlay:")
-//        print("addRemote")
-//    }
-//
-//    func remoteTogglePlayPause(event: MPRemoteCommandEvent) {
-//        // イヤホンのセンターボタンを押した時の処理
-//        debug.text=("toggle")
-//        print("toggle")
-//    }
-            //        if micStatus==0{
-    //            //マイクオン
-    //            micStatus = 1
-    //            //時刻取得
-    //            let now = NSDate()
-    //
-    //            let formatter = DateFormatter()
-    //            formatter.dateFormat = "yyyy/MM/dd HH:mm:ss"
-    //
-    //            let dateString = formatter.string(from: now as Date)
-    //            dateArray[dataNum] = dateString
-    //            //data数を加算
-    //            if dataNum<5{
-    //                dataNum+=1
-    //            } else {
-    //                dataNum = 0
-    //            }
-    //            startStreaming()
-    //            print("micstatus : on")
-    //            debug.text=("on")
-    //        } else if micStatus==1{
-    //            //マイクオフ
-    //           stopStreaming()
-    //        }
-    //
-    //    }
-    //    func remotePlay(event: MPRemoteCommandEvent) {
-    //        // プレイボタンが押された時の処理
-    //        // （略）
-    //       debug.text=("play")
-    //        print("play")
-    //    }
-    
-    //    private func startStreaming() {
-    //        let audioSession = AVAudioSession.sharedInstance()
-    //        try! audioSession.setCategory(AVAudioSessionCategoryRecord)
-    //        audioData = NSMutableData()
-    //        _ = AudioController.sharedInstance.prepare(specifiedSampleRate: SAMPLE_RATE)
-    //        SpeechRecognitionService.sharedInstance.sampleRate = SAMPLE_RATE
-    //        _ = AudioController.sharedInstance.start()
-    //    }
-    //
-    //    private func stopStreaming() {
-    //        _ = AudioController.sharedInstance.stop()
-    //        SpeechRecognitionService.sharedInstance.stopStreaming()
-    //    }
-    
-    
-    
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
     
     
 }
@@ -216,7 +145,7 @@ extension ViewController: AudioControllerDelegate {
                 }
                 
                 if let error = error {
-                    strongSelf.contentsArray.add(error.localizedDescription)
+                    strongSelf.contentsArray.append(error.localizedDescription)
                     
                     print(strongSelf.contentsArray)
                 } else if let response = response {
@@ -245,18 +174,22 @@ extension ViewController: AudioControllerDelegate {
                     let formatter = DateFormatter()
                     formatter.dateFormat = "yyyy/MM/dd \n HH:mm:ss"
                     
-                    let dateString = formatter.string(from: now as Date)
+                    strongSelf.dateString = formatter.string(from: now as Date)
+                    
+                     strongSelf.recordingView.text = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
                     
                     if(self?.dataNum == 0){
-                        
-                        strongSelf.contentsArray.add (((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
-                    strongSelf.dateArray.add(dateString)
-                    self?.dataNum = 1
-                    }else{
-                        strongSelf.contentsArray[strongSelf.contentsArray.count-1] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
-                        strongSelf.dateArray[strongSelf.dateArray.count-1] = dateString
+//                        strongSelf.recordingView.text = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+////                        strongSelf.contentsArray.add (((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
+                    //strongSelf.dateArray[0] = dateString
                     }
-                    print(strongSelf.contentsArray)
+//                    self?.dataNum = 1
+//                    }else{
+//
+////                        strongSelf.contentsArray[strongSelf.contentsArray.count-1] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+////                        strongSelf.dateArray[strongSelf.dateArray.count-1] = dateString
+//                    }
+//                    print(strongSelf.contentsArray)
                     //NSLog(String(describing: strongSelf.contentsArray[(self?.dataNum)!]))
                     if finished {
                         strongSelf.stopAudio(strongSelf)
@@ -269,8 +202,36 @@ extension ViewController: AudioControllerDelegate {
         self.userDefaults.set(contentsArray, forKey: "contents")
         self.userDefaults.synchronize()
         
-        table.reloadData()
+        //table.reloadData()
     }
+    
+    @IBAction func find(sender: UIButton) {
+        Konashi.find()
+    }
+    
+    @IBAction func saveButton(_ sender: Any) {
+        if (self.recordingView.text != "" && self.recordingView.text != "!saved"){
+            print("recorded")
+            if(userDefaults.object(forKey: "date") != nil){
+            print("defaults not nil")
+                self.contentsArray = userDefaults.object(forKey: "contents") as! Array<String>
+            self.dateArray = userDefaults.object(forKey: "date") as! Array<String>
+            }
+
+            self.contentsArray.append(self.recordingView.text)
+            self.dateArray.append(dateString)
+
+            userDefaults.set(self.contentsArray, forKey: "contents")
+            userDefaults.set(self.dateArray, forKey: "date")
+
+            self.recordingView.text = "!saved"
+            print("saveButton")
+        }else{
+            self.recordingView.text = "please record new one"
+        }
+    }
+    
+    
 }
     
 
