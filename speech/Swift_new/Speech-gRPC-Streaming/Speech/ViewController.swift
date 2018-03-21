@@ -55,6 +55,7 @@ UITextViewDelegate,AVSpeechSynthesizerDelegate{
             Konashi.pinMode(KonashiDigitalIOPin.LED2, mode: KonashiPinMode.output)
             Konashi.digitalWrite(KonashiDigitalIOPin.LED2, value: KonashiLevel.high)
             Konashi.pinMode(KonashiDigitalIOPin.S1,mode:KonashiPinMode.input)
+            var doubleClickSta:Int = 0
             Konashi.shared().digitalInputDidChangeValueHandler = {_,_  in
                 //print("sw=",  Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue)
 //                if (Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
@@ -72,31 +73,36 @@ UITextViewDelegate,AVSpeechSynthesizerDelegate{
 //                        print("long")
 //                    }
 //                }
+                doubleClickSta += 1
                 if (Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
                     print("buttun pushed")
-                    //start streaming と同じ
-                    if (self.status == 0){
-                        print("recording...")
-                        self.recordAudio(self)
-//                        let audioSession = AVAudioSession.sharedInstance()
-//                        do {
-//                            try audioSession.setCategory(AVAudioSessionCategoryRecord)
-//                        } catch {
-//
-//                        }
-//                        self.audioData = NSMutableData()
-//                        _ = AudioController.sharedInstance.prepare(specifiedSampleRate: self.SAMPLE_RATE)
-//                        SpeechRecognitionService.sharedInstance.sampleRate = self.SAMPLE_RATE
-//                        _ = AudioController.sharedInstance.start()
-//                        self.status = 1
-                    }else if (self.status == 1){
-                        //stop audioと同じ
-                        print("stop")
-                        self.stopAudio(self)
-                    }else if (self.status == 2){
-                        print("save")
-                        self.saveButton(self)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { // change 2 to desired number of seconds
+                        
+                        //single click
+                        if (doubleClickSta == 2){
+                            //start streaming と同じ
+                            if (self.status == 0){
+                                print("recording...")
+                                self.recordAudio(self)
+                            }else if (self.status == 1){
+                                //stop audioと同じ
+                                print("stop")
+                                self.stopAudio(self)
+                            }else if (self.status == 2){
+                                print("save")
+                                self.saveButton(self)
+                            }
+                        }else if (doubleClickSta>3){
+                            print("doubleClick")
+                            if (self.status == 2){
+                                self.recordingView.text = ""
+                                self.status = 0
+                            }
+                        }
+                        
+                        doubleClickSta = 0
                     }
+                    
                 }
             }
         }
@@ -122,20 +128,7 @@ UITextViewDelegate,AVSpeechSynthesizerDelegate{
     let talker:AVSpeechSynthesizer = AVSpeechSynthesizer()
     var recorded: String?
     
-    @IBAction func checkButton(_ sender: Any) {
-        //読み上げ
-        if self.talker.isSpeaking {
-            self.talker.stopSpeaking(at: .immediate)
-        }
-        
-        let utterance = AVSpeechUtterance(string: self.recordingView.text)
-        utterance.voice = AVSpeechSynthesisVoice(language:"jp-JP")
-        utterance.rate = 0.55
-        utterance.volume = 1
-
-        self.talker.speak(utterance)
-        
-    }
+    
     
     @IBAction func stopAudio(_ sender: NSObject) {
         
