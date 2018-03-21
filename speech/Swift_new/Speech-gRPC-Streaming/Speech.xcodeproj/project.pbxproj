@@ -26,9 +26,7 @@
 		3F12042C206103C900857E66 /* KonashiUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F12041C206103C900857E66 /* KonashiUtils.m */; };
 		3F12042E2061068500857E66 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F12042D2061068500857E66 /* CoreBluetooth.framework */; };
 		3F97DD45205BCD9C0000A5DB /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD3D205BCD960000A5DB /* NoteDetailViewController.swift */; };
-		3F97DD46205BCD9C0000A5DB /* SaveViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD41205BCD990000A5DB /* SaveViewController.swift */; };
 		3F97DD47205BCD9C0000A5DB /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD42205BCD9A0000A5DB /* NoteViewController.swift */; };
-		3F97DD48205BCD9C0000A5DB /* RecordingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD43205BCD9B0000A5DB /* RecordingViewController.swift */; };
 		D31E0EB81D778A56006A50AB /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31E0EB71D778A56006A50AB /* SpeechRecognitionService.swift */; };
 		D31E0EBA1D77AA2F006A50AB /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31E0EB91D77AA2F006A50AB /* AudioController.swift */; };
 		D34C17D91C948F5800D69BCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D34C17D81C948F5800D69BCA /* Assets.xcassets */; };
@@ -82,9 +80,7 @@
 		3F97DD3E205BCD970000A5DB /* note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = note.png; sourceTree = "<group>"; };
 		3F97DD3F205BCD980000A5DB /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
 		3F97DD40205BCD980000A5DB /* save.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = save.png; sourceTree = "<group>"; };
-		3F97DD41205BCD990000A5DB /* SaveViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SaveViewController.swift; sourceTree = "<group>"; };
 		3F97DD42205BCD9A0000A5DB /* NoteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
-		3F97DD43205BCD9B0000A5DB /* RecordingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingViewController.swift; sourceTree = "<group>"; };
 		3F97DD44205BCD9B0000A5DB /* rec.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = rec.png; sourceTree = "<group>"; };
 		54C3D1E96C8C43AB14662311 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E83ACE29B0D0DF0085BA8F2 /* Pods-Speech.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Speech.release.xcconfig"; path = "Pods/Target Support Files/Pods-Speech/Pods-Speech.release.xcconfig"; sourceTree = "<group>"; };
@@ -238,9 +234,7 @@
 				3F97DD3D205BCD960000A5DB /* NoteDetailViewController.swift */,
 				3F97DD42205BCD9A0000A5DB /* NoteViewController.swift */,
 				3F97DD44205BCD9B0000A5DB /* rec.png */,
-				3F97DD43205BCD9B0000A5DB /* RecordingViewController.swift */,
 				3F97DD40205BCD980000A5DB /* save.png */,
-				3F97DD41205BCD990000A5DB /* SaveViewController.swift */,
 				3F97DD3F205BCD980000A5DB /* stop.png */,
 				D3E34EA01D77541D00EF755D /* AppDelegate.swift */,
 				D34C17D81C948F5800D69BCA /* Assets.xcassets */,
@@ -303,7 +297,7 @@
 		D34C17C11C948F5700D69BCA /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0820;
+				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = Google;
 				TargetAttributes = {
 					D34C17C81C948F5700D69BCA = {
@@ -422,12 +416,10 @@
 				3F120421206103C900857E66 /* CBService+Konashi.m in Sources */,
 				3F120428206103C900857E66 /* KNSCentralManager.m in Sources */,
 				D31E0EBA1D77AA2F006A50AB /* AudioController.swift in Sources */,
-				3F97DD46205BCD9C0000A5DB /* SaveViewController.swift in Sources */,
 				3F12041F206103C900857E66 /* KNSKonashiPeripheralImpl.m in Sources */,
 				D31E0EB81D778A56006A50AB /* SpeechRecognitionService.swift in Sources */,
 				3F12042C206103C900857E66 /* KonashiUtils.m in Sources */,
 				3F12041E206103C900857E66 /* KNSKoshianPeripheralImpl.m in Sources */,
-				3F97DD48205BCD9C0000A5DB /* RecordingViewController.swift in Sources */,
 				3F12042A206103C900857E66 /* KNSHandlerManager.m in Sources */,
 				3F120426206103C900857E66 /* Konashi+ACDrive.m in Sources */,
 				3F120422206103C900857E66 /* CBPeripheral+Konashi.m in Sources */,
@@ -467,14 +459,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -497,7 +495,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -513,14 +511,20 @@
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -537,7 +541,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";

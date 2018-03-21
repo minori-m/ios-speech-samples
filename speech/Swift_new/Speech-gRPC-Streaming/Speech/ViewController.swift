@@ -13,7 +13,7 @@ import MediaPlayer
 
 
 class ViewController: UIViewController ,
-UITextViewDelegate{
+UITextViewDelegate,AVSpeechSynthesizerDelegate{
 //    class ViewController: UIViewController ,
 //    UITableViewDataSource,UITableViewDelegate,UITableViewDelegate{
     
@@ -47,8 +47,9 @@ UITextViewDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        talker.delegate = self as? AVSpeechSynthesizerDelegate
         AudioController.sharedInstance.delegate = self
+        
         
         Konashi.shared().readyHandler = {() -> Void in
             Konashi.pinMode(KonashiDigitalIOPin.LED2, mode: KonashiPinMode.output)
@@ -56,6 +57,21 @@ UITextViewDelegate{
             Konashi.pinMode(KonashiDigitalIOPin.S1,mode:KonashiPinMode.input)
             Konashi.shared().digitalInputDidChangeValueHandler = {_,_  in
                 //print("sw=",  Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue)
+//                if (Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
+//                    let startTime = NSDate()
+//                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.02) {
+//                        while(Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
+//                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.005){
+//                                print("delayed")
+//                            }
+//                        }
+//                    }
+//                    if (NSDate().timeIntervalSince(startTime as Date) < 500){
+//                        print("short")
+//                    } else{
+//                        print("long")
+//                    }
+//                }
                 if (Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
                     print("buttun pushed")
                     //start streaming と同じ
@@ -86,43 +102,12 @@ UITextViewDelegate{
         }
     }
     
-//    //Table Viewのセルの数を指定
-//    func tableView(_ table: UITableView,
-//                   numberOfRowsInSection section: Int) -> Int {
-//        print("count")
-//        return dateArray.count
-//
-//    }
-//
-//    //各セルの要素を設定する
-//    func tableView(_ table: UITableView,
-//                   cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-//
-//        // tableCell の ID で UITableViewCell のインスタンスを生成
-//        let cell = table.dequeueReusableCell(withIdentifier: "tableCell",
-//                                             for: indexPath)
-//
-//
-//        // Tag番号 1 で UILabel for dateインスタンスの生成
-//        let dateLabel = cell.viewWithTag(1) as! UILabel
-//        dateLabel.text = String(describing: dateArray[indexPath.row])
-//        print(indexPath.row)
-//
-//        // Tag番号 ２ で UILabel for contentsインスタンスの生成
-//        let contentsLabel = cell.viewWithTag(2) as! UILabel
-//        contentsLabel.text = String(describing: contentsArray[indexPath.row])
-//        contentsLabel.sizeToFit()
-//        print(indexPath.row)
-//
-//        debug.text = "tableView"
-//        return cell
-//    }
-    
+
     
     @IBAction func recordAudio(_ sender: NSObject) {
         let audioSession = AVAudioSession.sharedInstance()
         do {
-            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+            try audioSession.setCategory(AVAudioSessionCategoryPlayAndRecord)
         } catch {
             
         }
@@ -134,26 +119,49 @@ UITextViewDelegate{
 
     }
     
-    let talker = AVSpeechSynthesizer()
+    let talker:AVSpeechSynthesizer = AVSpeechSynthesizer()
+    var recorded: String?
     
+    @IBAction func checkButton(_ sender: Any) {
+        //読み上げ
+        if self.talker.isSpeaking {
+            self.talker.stopSpeaking(at: .immediate)
+        }
+        
+        let utterance = AVSpeechUtterance(string: self.recordingView.text)
+        utterance.voice = AVSpeechSynthesisVoice(language:"jp-JP")
+        utterance.rate = 0.55
+        utterance.volume = 1
+
+        self.talker.speak(utterance)
+        
+    }
     
     @IBAction func stopAudio(_ sender: NSObject) {
+        
         if(self.status == 1){
         _ = AudioController.sharedInstance.stop()
         SpeechRecognitionService.sharedInstance.stopStreaming()
         
             self.status = 2
-        
+        print("self = ", self.recordingView.text)
+            
         //読み上げ
-        let utterance = AVSpeechUtterance(string : "こんにちは")
+        if self.talker.isSpeaking {
+            self.talker.stopSpeaking(at: .immediate)
+        }
+        
+        let utterance = AVSpeechUtterance(string: self.recordingView.text)
         utterance.voice = AVSpeechSynthesisVoice(language:"jp-JP")
         utterance.rate = 0.55
         utterance.volume = 1
-            
+        
         self.talker.speak(utterance)
         print(String(describing:StreamingRecognizeResponse_SpeechEventType.self))
         }
     }
+    
+    
     
 
     override func didReceiveMemoryWarning() {
@@ -214,6 +222,8 @@ extension ViewController: AudioControllerDelegate {
                     strongSelf.dateString = formatter.string(from: now as Date)
                     
                      strongSelf.recordingView.text = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+                    strongSelf.recorded = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
+                    print(String(describing:type (of:((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript!!)))
                     
                     
                     if finished {
