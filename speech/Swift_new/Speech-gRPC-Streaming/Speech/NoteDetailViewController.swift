@@ -18,14 +18,14 @@ class NoteDetailViewController: UIViewController,UITextViewDelegate{
     //var defaultsContent : String = ""
     var userDefaults = UserDefaults.standard
     
-    
+    var cellNum:Int?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        contentView.text = (userDefaults.object(forKey:"contents") as! Array<String>)[0]
+        contentView.text = (self.userDefaults.object(forKey:"contents") as! Array<String>)[self.cellNum!]
 //        self.view.addSubview(content)
-       
-        print(userDefaults.object(forKey:"contents") as! Array<String>)
+        print(self.cellNum!)
+        print(self.userDefaults.object(forKey:"contents") as! Array<String>)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

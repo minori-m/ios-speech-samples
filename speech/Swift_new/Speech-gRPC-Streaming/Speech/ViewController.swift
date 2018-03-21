@@ -31,7 +31,7 @@ UITextViewDelegate{
     }
     
     var micStatus:Int = 0
-    var dataNum : Int = 0
+   
     var audioData: NSMutableData!
     let SAMPLE_RATE = 16000
     
@@ -41,12 +41,12 @@ UITextViewDelegate{
     
     var dateString:String = ""
     
+    //0:none&saved, 1:under recording, 2:wait for saving
+    var status:Int = 0
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
-//        table.register(UINib(nibName: "TableViewCell", bundle: nil), forCellReuseIdentifier: "TableViewCell")
-//        table.estimatedRowHeight = 66
-//        table.rowHeight = UITableViewAutomaticDimension
         
         AudioController.sharedInstance.delegate = self
         
@@ -55,7 +55,33 @@ UITextViewDelegate{
             Konashi.digitalWrite(KonashiDigitalIOPin.LED2, value: KonashiLevel.high)
             Konashi.pinMode(KonashiDigitalIOPin.S1,mode:KonashiPinMode.input)
             Konashi.shared().digitalInputDidChangeValueHandler = {_,_  in
-                print("sw=",  Konashi.digitalRead(KonashiDigitalIOPin.S1))
+                //print("sw=",  Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue)
+                if (Konashi.digitalRead(KonashiDigitalIOPin.S1).rawValue == 1){
+                    print("buttun pushed")
+                    //start streaming と同じ
+                    if (self.status == 0){
+                        print("recording...")
+                        self.recordAudio(self)
+//                        let audioSession = AVAudioSession.sharedInstance()
+//                        do {
+//                            try audioSession.setCategory(AVAudioSessionCategoryRecord)
+//                        } catch {
+//
+//                        }
+//                        self.audioData = NSMutableData()
+//                        _ = AudioController.sharedInstance.prepare(specifiedSampleRate: self.SAMPLE_RATE)
+//                        SpeechRecognitionService.sharedInstance.sampleRate = self.SAMPLE_RATE
+//                        _ = AudioController.sharedInstance.start()
+//                        self.status = 1
+                    }else if (self.status == 1){
+                        //stop audioと同じ
+                        print("stop")
+                        self.stopAudio(self)
+                    }else if (self.status == 2){
+                        print("save")
+                        self.saveButton(self)
+                    }
+                }
             }
         }
     }
@@ -104,19 +130,29 @@ UITextViewDelegate{
         _ = AudioController.sharedInstance.prepare(specifiedSampleRate: SAMPLE_RATE)
         SpeechRecognitionService.sharedInstance.sampleRate = SAMPLE_RATE
         _ = AudioController.sharedInstance.start()
-        dataNum = 0
-//        if(dataNum<5){
-//            dataNum+=1
-//        }else{
-//            dataNum=0
-//        }
+        self.status = 1
+
     }
     
+    let talker = AVSpeechSynthesizer()
+    
+    
     @IBAction func stopAudio(_ sender: NSObject) {
+        if(self.status == 1){
         _ = AudioController.sharedInstance.stop()
         SpeechRecognitionService.sharedInstance.stopStreaming()
         
-        //print(dataNum)
+            self.status = 2
+        
+        //読み上げ
+        let utterance = AVSpeechUtterance(string : "こんにちは")
+        utterance.voice = AVSpeechSynthesisVoice(language:"jp-JP")
+        utterance.rate = 0.55
+        utterance.volume = 1
+            
+        self.talker.speak(utterance)
+        print(String(describing:StreamingRecognizeResponse_SpeechEventType.self))
+        }
     }
     
 
@@ -145,7 +181,8 @@ extension ViewController: AudioControllerDelegate {
                 }
                 
                 if let error = error {
-                    strongSelf.contentsArray.append(error.localizedDescription)
+                    strongSelf.recordingView.text = error.localizedDescription
+                    //strongSelf.contentsArray.append(error.localizedDescription)
                     
                     print(strongSelf.contentsArray)
                 } else if let response = response {
@@ -178,58 +215,54 @@ extension ViewController: AudioControllerDelegate {
                     
                      strongSelf.recordingView.text = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
                     
-                    if(self?.dataNum == 0){
-//                        strongSelf.recordingView.text = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
-////                        strongSelf.contentsArray.add (((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript)
-                    //strongSelf.dateArray[0] = dateString
-                    }
-//                    self?.dataNum = 1
-//                    }else{
-//
-////                        strongSelf.contentsArray[strongSelf.contentsArray.count-1] = ((response.resultsArray[0] as! StreamingRecognitionResult).alternativesArray[0] as AnyObject).transcript
-////                        strongSelf.dateArray[strongSelf.dateArray.count-1] = dateString
-//                    }
-//                    print(strongSelf.contentsArray)
-                    //NSLog(String(describing: strongSelf.contentsArray[(self?.dataNum)!]))
+                    
                     if finished {
                         strongSelf.stopAudio(strongSelf)
+                        strongSelf.status = 2
+                        print("finished")
                     }
                 }
             })
             self.audioData = NSMutableData()
         }
-        print(StreamingRecognizeResponse_SpeechEventType.endOfSingleUtterance)
-        self.userDefaults.set(contentsArray, forKey: "contents")
-        self.userDefaults.synchronize()
+        //print(StreamingRecognizeResponse_SpeechEventType.endOfSingleUtterance)
+        
         
         //table.reloadData()
     }
     
+    
+    //Konashi 接続
     @IBAction func find(sender: UIButton) {
         Konashi.find()
     }
     
+    //保存時の処理
     @IBAction func saveButton(_ sender: Any) {
-        if (self.recordingView.text != "" && self.recordingView.text != "!saved"){
+        if (self.recordingView.text != "" && self.recordingView.text != "!saved" && self.status == 2){
             print("recorded")
             if(userDefaults.object(forKey: "date") != nil){
             print("defaults not nil")
-                self.contentsArray = userDefaults.object(forKey: "contents") as! Array<String>
+            self.contentsArray = userDefaults.object(forKey: "contents") as! Array<String>
             self.dateArray = userDefaults.object(forKey: "date") as! Array<String>
             }
 
             self.contentsArray.append(self.recordingView.text)
-            self.dateArray.append(dateString)
-
+            self.dateArray.append(self.dateString)
+            
+            print("in saveButton",contentsArray,dateArray)
+            
             userDefaults.set(self.contentsArray, forKey: "contents")
             userDefaults.set(self.dateArray, forKey: "date")
 
             self.recordingView.text = "!saved"
             print("saveButton")
+            self.status = 0
         }else{
             self.recordingView.text = "please record new one"
         }
     }
+    
     
     
 }
