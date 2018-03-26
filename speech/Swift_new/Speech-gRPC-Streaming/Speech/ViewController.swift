@@ -47,6 +47,8 @@ UITextViewDelegate,AVSpeechSynthesizerDelegate{
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.navigationItem.titleView = UIImageView(image:UIImage(named:"logo.png"))
+        
         talker.delegate = self as? AVSpeechSynthesizerDelegate
         AudioController.sharedInstance.delegate = self
         
