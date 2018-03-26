@@ -25,11 +25,11 @@
 		3F12042B206103C900857E66 /* KNSPeripheral.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F12041B206103C900857E66 /* KNSPeripheral.m */; };
 		3F12042C206103C900857E66 /* KonashiUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 3F12041C206103C900857E66 /* KonashiUtils.m */; };
 		3F12042E2061068500857E66 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3F12042D2061068500857E66 /* CoreBluetooth.framework */; };
+		3F131D592063A4D600013ECA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3F131D582063A4D500013ECA /* Assets.xcassets */; };
 		3F97DD45205BCD9C0000A5DB /* NoteDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD3D205BCD960000A5DB /* NoteDetailViewController.swift */; };
 		3F97DD47205BCD9C0000A5DB /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F97DD42205BCD9A0000A5DB /* NoteViewController.swift */; };
 		D31E0EB81D778A56006A50AB /* SpeechRecognitionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31E0EB71D778A56006A50AB /* SpeechRecognitionService.swift */; };
 		D31E0EBA1D77AA2F006A50AB /* AudioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31E0EB91D77AA2F006A50AB /* AudioController.swift */; };
-		D34C17D91C948F5800D69BCA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = D34C17D81C948F5800D69BCA /* Assets.xcassets */; };
 		D34C17DC1C948F5800D69BCA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D34C17DA1C948F5800D69BCA /* LaunchScreen.storyboard */; };
 		D392D9861C94937D002F5132 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D392D9851C94937D002F5132 /* Main.storyboard */; };
 		D3E34EA11D77541D00EF755D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3E34EA01D77541D00EF755D /* AppDelegate.swift */; };
@@ -76,6 +76,7 @@
 		3F12041B206103C900857E66 /* KNSPeripheral.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KNSPeripheral.m; sourceTree = "<group>"; };
 		3F12041C206103C900857E66 /* KonashiUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = KonashiUtils.m; sourceTree = "<group>"; };
 		3F12042D2061068500857E66 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		3F131D582063A4D500013ECA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3F97DD3D205BCD960000A5DB /* NoteDetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteDetailViewController.swift; sourceTree = "<group>"; };
 		3F97DD3E205BCD970000A5DB /* note.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = note.png; sourceTree = "<group>"; };
 		3F97DD3F205BCD980000A5DB /* stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = stop.png; sourceTree = "<group>"; };
@@ -90,7 +91,6 @@
 		D31E0EB71D778A56006A50AB /* SpeechRecognitionService.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SpeechRecognitionService.swift; sourceTree = "<group>"; };
 		D31E0EB91D77AA2F006A50AB /* AudioController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AudioController.swift; sourceTree = "<group>"; };
 		D34C17C91C948F5700D69BCA /* Speech.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Speech.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D34C17D81C948F5800D69BCA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D34C17DB1C948F5800D69BCA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		D34C17DD1C948F5800D69BCA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D392D9851C94937D002F5132 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
@@ -237,7 +237,7 @@
 				3F97DD40205BCD980000A5DB /* save.png */,
 				3F97DD3F205BCD980000A5DB /* stop.png */,
 				D3E34EA01D77541D00EF755D /* AppDelegate.swift */,
-				D34C17D81C948F5800D69BCA /* Assets.xcassets */,
+				3F131D582063A4D500013ECA /* Assets.xcassets */,
 				D31E0EB91D77AA2F006A50AB /* AudioController.swift */,
 				D34C17DD1C948F5800D69BCA /* Info.plist */,
 				D34C17DA1C948F5800D69BCA /* LaunchScreen.storyboard */,
@@ -332,8 +332,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				D392D9861C94937D002F5132 /* Main.storyboard in Resources */,
+				3F131D592063A4D600013ECA /* Assets.xcassets in Resources */,
 				D34C17DC1C948F5800D69BCA /* LaunchScreen.storyboard in Resources */,
-				D34C17D91C948F5800D69BCA /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
